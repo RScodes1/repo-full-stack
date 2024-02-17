@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App</title>
+</head>
+<body>
+    <h1>Notes</h1>
+    <div id="notesContainer">
+        <!-- Notes will be displayed here -->
+    </div>
+
+    <!-- Template for a single note -->
+    <template id="noteTemplate">
+        <div class="note">
+            <h2 class="title"></h2>
+            <p class="body"></p>
+            <button class="editBtn">Edit</button>
+            <button class="deleteBtn">Delete</button>
+        </div>
+    </template>
+
+    <script>
+        fetchNotes();
+
+        async function fetchNotes() {
+            const response = await fetch('https://itchy-cardigan-cow.cyclic.app/notes');
+            const notes = await response.json();
+
+            const notesContainer = document.getElementById('notesContainer');
+            const noteTemplate = document.getElementById('noteTemplate');
+
+            notes.forEach(note => {
+                const noteElement = noteTemplate.content.cloneNode(true);
+                noteElement.querySelector('.title').textContent = note.title;
+                noteElement.querySelector('.body').textContent = note.body;
+
+                noteElement.querySelector('.editBtn').addEventListener('click', () => editNote(note.id));
+                noteElement.querySelector('.deleteBtn').addEventListener('click', () => deleteNote(note.id));
+
+                notesContainer.appendChild(noteElement);
+            });
+        }
+
+        function editNote(noteId) {
+            console.log('Edit note with ID:', noteId);
+        }
+
+        function deleteNote(noteId) {
+
+            fetch(`https://itchy-cardigan-cow.cyclic.app/notes/${noteId}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Note deleted successfully');
+                } else {
+                    console.error('Failed to delete note');
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting note:', error);
+            });
+        }
+    </script>
+</body>
+</html>

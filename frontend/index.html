@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sign up</title>
+</head>
+<body>
+    <h2>This is a registration page</h2>
+    <input type="text" id="username" name="username" placeholder="Username" autocomplete="username">
+    <input type="email" id="email" name="email" placeholder="Email" autocomplete="email">
+    <input type="password" id="password" name="password" placeholder="Password" autocomplete="current-password">
+    
+    <button onclick="handleregistration()">register!</button>
+
+    <script>
+           const handleregistration=()=>{
+            let username = document.getElementById("username").value
+            let email = document.getElementById("email").value
+            let password = document.getElementById("password").value
+
+            const payload = {
+                username,
+                email,
+                password
+            }
+            // console.log(payload);
+            fetch('https://itchy-cardigan-cow.cyclic.app/users/register',{
+                method : "POST",
+                headers: {
+                    "Content-type" : "application/json"
+                },
+                body : JSON.stringify(payload)
+            }).then(res=>res.json())
+            .then(data=>console.log(data))
+            .catch(err=>console.log(err))
+
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 10000);
+         }
+    </script>
+</body>
+</html>

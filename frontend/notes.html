@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes Interface</title>
+  </head>
+  <body>
+    <h2>List of the Notes</h2>
+    <div id="parent"></div>
+    <button onclick="handleNote()">Add a Note</button>
+  </body>
+  <script>
+    const getNotes = async () => {
+      try {
+        const response = await fetch(
+          "https://itchy-cardigan-cow.cyclic.app/notes",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        const data = await response.json();
+        console.log(data);
+        addData(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    const handleNote = () => {
+      window.location.href = "addNote.html";
+    };
+
+    const addData = (data) => {
+      if (Array.isArray(data.notes)) {
+        data.notes.forEach((element) => {
+          createCard(element.title, element.body);
+        });
+      } else {
+        console.log("Invalid data format: 'notes' property is not an array");
+      }
+    };
+
+    const createCard = (title, body) => {
+      const card = document.createElement("div");
+      card.classList.add("cards");
+      card.innerHTML = `
+       <div class="card">
+        <h3>${title}</h3>
+        <p>${body}</p>
+        <button class=btn>Edit</button>
+        <button class=btn>Delete</button>
+        </div>
+     `;
+      document.getElementById("parent").appendChild(card);
+    };
+
+    getNotes();
+  </script>
+</html>
